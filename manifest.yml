@@ -1,0 +1,7 @@
+applications:
+- name: TenantManagementService
+  memory: 512M
+ # buildpack: java_buildpack
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.14
+  path: target/TMS-0.0.1-SNAPSHOT.jar
+
