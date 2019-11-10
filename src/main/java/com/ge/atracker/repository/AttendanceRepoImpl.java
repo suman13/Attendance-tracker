@@ -14,6 +14,7 @@ public interface AttendanceRepoImpl extends JpaRepository<Attendance, String> {
 
 	public List<Attendance> findByUSN(String usn);
 
-	@Query("SELECT count(*) FROM attendance  WHERE business_name =:usn and entry_date=:today")
-	public Long checkStudentDetails(@Param("usn") String usn, @Param("today") String today);
+	@Query(value = "SELECT count(*) FROM attendance  WHERE usn =:usn and DATE(entry_date)=DATE(now()) ", nativeQuery = true)
+	public Long checkStudentDetails(@Param("usn") String usn);
+
 }

@@ -2,6 +2,7 @@ package com.ge.atracker.service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ public class StudentServiceImpl implements IStudentServiceInterface {
 		try {
 			Date today = Date.valueOf(LocalDate.now());
 
-			Long count = attendanceRepoInterface.checkStudentDetails(usn, today.toString());
+			Long count = attendanceRepoInterface.checkStudentDetails(usn);
 			if (count > 0) {
 				res.setStatus("fail");
 				res.setCode("400");
@@ -40,7 +41,6 @@ public class StudentServiceImpl implements IStudentServiceInterface {
 			} else {
 				Attendance att = new Attendance();
 				att.setuSN(usn);
-				att.setEntryDate(today);
 				attendanceRepoInterface.saveAndFlush(att);
 				res.setResponseDetail("Attendance inserted");
 				res.setCode("200");
