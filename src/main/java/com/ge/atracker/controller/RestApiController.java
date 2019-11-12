@@ -18,6 +18,8 @@ import com.ge.atracker.model.Attendance;
 import com.ge.atracker.model.ResponseModel;
 import com.ge.atracker.service.IStudentServiceInterface;
 
+import io.swagger.annotations.ApiParam;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/v1")
@@ -28,12 +30,22 @@ public class RestApiController {
 	@Autowired
 	IStudentServiceInterface attendance;
 
-	@RequestMapping(value = "/getAttendance/{usn}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAttendanceOfStudent/{usn}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<Attendance>> get(@PathVariable(value = "usn") String usn) {
 		System.out.println("get attendance details ");
 
 		List<Attendance> result = attendance.getDetails(usn);
+		return new ResponseEntity<List<Attendance>>(result, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/getAttendanceforDay/{date}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<Attendance>> getAttendanceforDay(
+			@PathVariable @ApiParam("Date format in yyyy-mm-dd") String date) {
+		System.out.println("get attendance details daywise ");
+
+		List<Attendance> result = attendance.getDetailsOfDay(date);
 		return new ResponseEntity<List<Attendance>>(result, HttpStatus.OK);
 	}
 

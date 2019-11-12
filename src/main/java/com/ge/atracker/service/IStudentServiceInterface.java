@@ -11,4 +11,6 @@ public interface IStudentServiceInterface {
 
 	ResponseModel insertRecord(String usn);
 
+	List<Attendance> getDetailsOfDay(String date);
+
 }

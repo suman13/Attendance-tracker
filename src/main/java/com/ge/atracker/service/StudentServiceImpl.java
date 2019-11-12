@@ -1,8 +1,5 @@
 package com.ge.atracker.service;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,21 +28,31 @@ public class StudentServiceImpl implements IStudentServiceInterface {
 		LOGGER.info("insertRecord");
 		ResponseModel res = new ResponseModel();
 		try {
-			Date today = Date.valueOf(LocalDate.now());
-
 			Long count = attendanceRepoInterface.checkStudentDetails(usn);
-			if (count > 0) {
-				res.setStatus("fail");
-				res.setCode("400");
-				res.setResponseDetail("Student already entered");
-			} else {
+			if (count == 0) {
 				Attendance att = new Attendance();
 				att.setuSN(usn);
+				att.setEntryDate();
 				attendanceRepoInterface.saveAndFlush(att);
-				res.setResponseDetail("Attendance inserted");
+				res.setResponseDetail("Attendance inserted, Studenet Entered campus");
 				res.setCode("200");
 				res.setStatus("sucess");
+			} else if (count == 1) {
+				Attendance att = attendanceRepoInterface.findByUsnForToday(usn);
+				if (att.getExit_date() != null) {
+					res.setStatus("fail");
+					res.setCode("400");
+					res.setResponseDetail("Student already exited campus");
+				} else {
+					att.setExit_date();
+					attendanceRepoInterface.saveAndFlush(att);
+					res.setResponseDetail("Attendance inserted, Studenet Exited campus");
+					res.setCode("200");
+					res.setStatus("sucess");
+				}
+
 			}
+
 		} catch (Exception e) {
 			res.setStatus("fail");
 			res.setCode("400");
@@ -61,6 +68,14 @@ public class StudentServiceImpl implements IStudentServiceInterface {
 		LOGGER.info("Fetching Details of " + usn);
 
 		return attendanceRepoInterface.findByUSN(usn);
+
+	}
+
+	@Override
+	public List<Attendance> getDetailsOfDay(String date) {
+		LOGGER.info("Fetching Details for " + date);
+
+		return attendanceRepoInterface.findByDate(date);
 
 	}
 
